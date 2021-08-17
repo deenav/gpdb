@@ -190,7 +190,7 @@ class GpStart(GpTestCase):
             return_code = gpstart.run()
 
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 1)
-        self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with master-only startup', 'N')
+        self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with coordinator-only startup', 'N')
         self.assertEqual(return_code, 4)
 
     def test_gpstart_success_without_auto_accept(self):
@@ -204,7 +204,7 @@ class GpStart(GpTestCase):
 
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 1)
         self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with Greenplum instance startup', 'N')
-        self.subject.logger.info.assert_any_call('Starting Master instance in admin mode')
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')
         self.subject.logger.info.assert_any_call('Database successfully started')
         self.assertEqual(return_code, 0)
 
@@ -219,7 +219,7 @@ class GpStart(GpTestCase):
         return_code = gpstart.run()
 
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 0)
-        self.subject.logger.info.assert_any_call('Starting Master instance in admin mode')
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')
         self.subject.logger.info.assert_any_call('Database successfully started')
         self.assertEqual(return_code, 0)
 
