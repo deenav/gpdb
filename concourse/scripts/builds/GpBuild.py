@@ -62,7 +62,8 @@ class GpBuild:
         if dbexists:
             source_env_cmd='source {0}/greenplum_path.sh && source ~/.bash_profile '.format(INSTALL_DIR)
         else:
-            status = self.create_demo_cluster(INSTALL_DIR, True)
+            #status = self.create_demo_cluster(INSTALL_DIR, True)
+            status = self.create_demo_cluster(INSTALL_DIR, False)
             fail_on_error(status)
             status = self._run_gpdb_command("createdb")
             fail_on_error(status)
