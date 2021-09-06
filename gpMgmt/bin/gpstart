@@ -397,13 +397,25 @@ class GpStart:
 
     ######
     def _startCoordinator(self):
-        logger.info("Starting Coordinator instance in admin mode")
 
-        cmd = gp.CoordinatorStart('coordinator in utility mode', self.coordinator_datadir,
-                             self.port, self.era,
-                             wrapper=self.wrapper, wrapper_args=self.wrapper_args,
-                             specialMode=self.specialMode, timeout=self.timeout, utilityMode=True
-                             )
+        if self.restricted and self.coordinatoronly:
+            logger.info("Starting Coordinator instance in admin and RESTRICTED mode")
+
+            # attempt to start coordinator in utility & restricted mode
+            cmd = gp.CoordinatorStart('Coordinator in utility and restricted mode', self.coordinator_datadir,
+                                 self.port, self.era,
+                                 wrapper=self.wrapper, wrapper_args=self.wrapper_args,
+                                 specialMode=self.specialMode, restrictedMode=self.restricted, timeout=self.timeout,
+                                 utilityMode=True, max_connections=self.max_connections
+                                 )
+        else:
+            logger.info("Starting Coordinator instance in admin mode")
+
+            cmd = gp.CoordinatorStart('coordinator in utility mode', self.coordinator_datadir,
+                                 self.port, self.era,
+                                 wrapper=self.wrapper, wrapper_args=self.wrapper_args,
+                                 specialMode=self.specialMode, timeout=self.timeout, utilityMode=True
+                                 )
         cmd.run()
 
         if cmd.get_results().rc != 0:

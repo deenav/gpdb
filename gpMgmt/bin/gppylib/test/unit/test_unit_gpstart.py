@@ -193,6 +193,37 @@ class GpStart(GpTestCase):
         self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with coordinator-only startup', 'N')
         self.assertEqual(return_code, 4)
 
+    def test_option_coordinator_restricted_success_with_auto_accept(self):
+        sys.argv = ["gpstart", "-m", "-R", "-a"]
+        self.mock_userinput.ask_yesno.return_value = True
+        self.subject.unix.PgPortIsActive.local.return_value = False
+
+        self.mock_os_path_exists.side_effect = os_exists_check
+
+        gpstart = self.setup_gpstart()
+        return_code = gpstart.run()
+
+        self.assertEqual(self.mock_userinput.ask_yesno.call_count, 0)
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin and RESTRICTED mode')
+        self.subject.logger.info.assert_any_call('Coordinator Started...')
+        self.assertEqual(return_code, 0)
+
+    def test_option_coordinator_restricted_success_without_auto_accept(self):
+        sys.argv = ["gpstart", "-m", "-R"]
+        self.mock_userinput.ask_yesno.return_value = True
+        self.subject.unix.PgPortIsActive.local.return_value = False
+
+        self.mock_os_path_exists.side_effect = os_exists_check
+
+        gpstart = self.setup_gpstart()
+        return_code = gpstart.run()
+
+        self.assertEqual(self.mock_userinput.ask_yesno.call_count, 1)
+        self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with coordinator-only startup', 'N')
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin and RESTRICTED mode')
+        self.subject.logger.info.assert_any_call('Coordinator Started...')
+        self.assertEqual(return_code, 0)
+
     def test_gpstart_success_without_auto_accept(self):
         self.mock_userinput.ask_yesno.return_value = True
         self.subject.unix.PgPortIsActive.local.return_value = False
