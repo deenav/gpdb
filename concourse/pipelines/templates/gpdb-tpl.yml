@@ -67,6 +67,7 @@ anchors:
 
 - &ccp_default_vars
   instance_type: n1-standard-1
+  mirrors: false
   <<: *default_platform
 
 - &destroy_common

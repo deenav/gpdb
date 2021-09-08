@@ -1,13 +1,13 @@
 @cross_subnet
 Feature: Tests for a cross_subnet cluster
 
-    Scenario: gpinitsystem works across subnets
-        Given the database is running
-         Then the primaries and mirrors including coordinatorStandby are on different subnets
-          And all the segments are running
-          And the segments are synchronized
-          And the mirrors replicate and fail over and back correctly
-          And the standby replicates and fails over and back correctly
+#    Scenario: gpinitsystem works across subnets
+#        Given the database is running
+#         Then the primaries and mirrors including coordinatorStandby are on different subnets
+#          And all the segments are running
+#          And the segments are synchronized
+#          And the mirrors replicate and fail over and back correctly
+#          And the standby replicates and fails over and back correctly
 
     Scenario: gpinitstandby works across subnets
         Given the database is not running

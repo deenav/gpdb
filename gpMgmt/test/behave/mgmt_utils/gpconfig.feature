@@ -180,7 +180,7 @@ Feature: gpconfig integration tests
         | application_name             |  string  | 'ben gie'  |
         | application_name             |  string  | ''         |
 
-    @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario Outline: gpconfig when a primary is unreachable
       Given the database is running
