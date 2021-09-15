@@ -14,7 +14,7 @@ Feature: gpstart behave tests
           And gpstart should print "Successfully started [0-9]+ of [0-9]+ segment instances, skipped 1 other segments" to stdout
           And gpstart should print "Number of segments not attempted to start: 1" to stdout
 
-    @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario: gpstart starts even if the standby host is unreachable
         Given the database is running
