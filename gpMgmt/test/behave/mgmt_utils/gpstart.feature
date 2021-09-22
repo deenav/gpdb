@@ -43,3 +43,105 @@ Feature: gpstart behave tests
           And the status of the mirror on content 1 should be "d"
 
           And the cluster is returned to a good state
+
+
+############################
+
+    @concourse_cluster
+    @demo_cluster
+    Scenario: "gpstart -a" accepts all (non-super user and utility mode) connections
+        Given the database is running
+          And the user runs psql with "-c 'create user foouser login;'" against database "postgres"
+          And the user runs command "echo 'local all foouser trust' >> $MASTER_DATA_DIRECTORY/pg_hba.conf"
+          And the database is not running
+          And the user runs "gpstart -a"
+          And "gpstart -a" should return a return code of 0
+
+         When The user runs psql "-c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+         When The user runs psql " -c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+
+    # There are couple of open bugs existing for utility mode connections behavior on GP-7x
+    # https://github.com/greenplum-db/gpdb/issues/12217 and https://github.com/greenplum-db/gpdb/issues/12566
+    # Expected result of below test cases might change based on above issues fix
+    @concourse_cluster
+    @demo_cluster
+    Scenario: "gpstart -m -a" should allow only utility mode connections
+        Given the database is not running
+          And the user runs "gpstart -ma"
+          And "gpstart -m -a" should return a return code of 0
+
+         When The user runs psql "-c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+        When The user runs psql "-c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+          And the user runs "gpstop -mai"
+          And "gpstop -mai" should return a return code of 0
+
+
+    @concourse_cluster
+    @demo_cluster
+    Scenario: "gpstart -m -R -a" should allow only super user in utility mode connections
+        Given the database is not running
+          And the user runs "gpstart -m -R -a"
+          And gpstart should return a return code of 0
+
+         When The user runs psql "-c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 2
+          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+
+         When The user runs psql "-c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '\l'" in "postgres"
+         Then command should return a return code of 2
+          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+
+          And the user runs "gpstop -mai"
+          And "gpstop -mai" should return a return code of 0
+
+
+   @concourse_cluster
+    @demo_cluster
+    Scenario: "gpstart -R -a" should not allow non-super user connections
+        Given the database is not running
+          And the user runs "gpstart -R -a"
+          And gpstart should return a return code of 0
+
+         When The user runs psql "-c '\l'" in "postgres" in utility mode
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '-l'" in "postgres" in utility mode
+         Then command should return a return code of 2
+          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+
+         When The user runs psql "-c '\l'" in "postgres"
+         Then command should return a return code of 0
+
+         When The user runs psql "-U foouser -c '-l'" in "postgres"
+         Then command should return a return code of 2
+          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+
+          And The user runs psql with "-c 'drop user foouser;'" against database "postgres"
+          And the user runs "gpstop -ai"
+          And "gpstop -ai" should return a return code of 0

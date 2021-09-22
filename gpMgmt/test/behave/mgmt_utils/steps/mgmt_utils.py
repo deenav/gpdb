@@ -1915,6 +1915,30 @@ def impl(context, query, dbname, host, port):
     cmd.run(validateAfter=True)
     context.stdout_message = cmd.get_stdout()
 
+@when('The user runs psql "{query}" in "{dbname}" in utility mode')
+@then('The user runs psql "{query}" in "{dbname}" in utility mode')
+def impl(context, query, dbname):
+    psql_cmd = "export PGOPTIONS=\'-c gp_role=utility\'; psql -d \'%s\' %s;" % (
+        dbname, query)
+    p = Popen(psql_cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+    stdout, stderr = p.communicate()
+
+    context.ret_code = p.returncode
+    context.stdout_message = stdout
+    context.error_message = stderr
+
+@when('The user runs psql "{query}" in "{dbname}"')
+@then('The user runs psql "{query}" in "{dbname}"')
+def impl(context, query, dbname):
+    psql_cmd = "psql -d \'%s\' %s;" % (dbname, query)
+    p = Popen(psql_cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+    stdout, stderr = p.communicate()
+
+    context.ret_code = p.returncode
+    context.stdout_message = stdout
+    context.error_message = stderr
+
+
 @then('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
 @when('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
 @given('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')

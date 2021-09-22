@@ -204,7 +204,7 @@ class GpStart(GpTestCase):
         return_code = gpstart.run()
 
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 0)
-        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin and RESTRICTED mode')
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')
         self.subject.logger.info.assert_any_call('Coordinator Started...')
         self.assertEqual(return_code, 0)
 
@@ -220,7 +220,7 @@ class GpStart(GpTestCase):
 
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 1)
         self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with coordinator-only startup', 'N')
-        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin and RESTRICTED mode')
+        self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')
         self.subject.logger.info.assert_any_call('Coordinator Started...')
         self.assertEqual(return_code, 0)
         
