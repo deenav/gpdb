@@ -45,7 +45,12 @@ Feature: gpstart behave tests
           And the cluster is returned to a good state
 
 
-############################
+    # Start the database with "gpstart" and test all psql login scenarios below
+    # | test scenarios                                 | psql cmd                                                           | return_code | DB login      | error message |
+    # | super user connections in Utility mode         | PGOPTIONS="-c gp_role=utility" psql -d postgres -c '/l'            | 0           | success       | None          |
+    # | non-super user connections in Utility mode     | PGOPTIONS="-c gp_role=utility" psql -d postgres -u foouser -c '/l' | 0           | success       | None          |
+    # | super user connections                         | psql -d postgres -c '\l'                                           | 0           | success       | None          |
+    # | non-super user connections                     | psql -d postgres -u foouser -c '/l'                                | 0           | success       | None          |
 
     @concourse_cluster
     @demo_cluster
@@ -69,22 +74,18 @@ Feature: gpstart behave tests
          When The user runs psql "-U foouser -c '\l'" in "postgres"
          Then command should return a return code of 0
 
-#Examples:
-#        | test description                                          | return_code | should_confirm | print_statement        | should_update_master | should_update_segment | cmd                                                                               |
-#        | super user connections | 0           | should         | completed successfully | should               | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
-#        | non-super user connections   | 0           | should         | User Aborted. Exiting. | should not           | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
-#        | non-super user connections in Utility mode     | 0           | should not     | completed successfully | should               | should not            | gpconfig -c application_name -v "easy" --masteronly                               |
-#        | super user connections in Utility mode     | 0           | should not     | completed successfully | should               | should not            | gpconfig -c application_name -v "easy" --masteronly                               |
 
-# Examples:
-#        | test description                               |  psql cmd  |return_code | should_confirm | print_statement        | should_update_coordinator | should_update_segment | cmd                                                                               |
-#        | super user connections in Utility mode         | 0           | should         | completed successfully | should                    | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
-#        | non-super user connections in Utility mode     | 0           | should         | User Aborted. Exiting. | should not                | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
-#        | super user connections                         | 0           | should         | completed successfully | should                    | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
-#        | non-super user connections                     | 0           | should         | User Aborted. Exiting. | should not                | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
+    # Start the database with "gpstart -m" and test all psql login scenarios below
+    # | test scenarios                                 | psql cmd                                                           | return_code | DB login      | error message |
+    # | super user connections in Utility mode         | PGOPTIONS="-c gp_role=utility" psql -d postgres -c '/l'            | 0           | success       | None          |
+    # | non-super user connections in Utility mode     | PGOPTIONS="-c gp_role=utility" psql -d postgres -u foouser -c '/l' | 0           | success       | None          |
+    # | super user connections                         | psql -d postgres -c '\l'                                           | 0           | success       | None          |
+    # | non-super user connections                     | psql -d postgres -u foouser -c '/l'                                | 0           | success       | None          |
 
-    # NOTE: There are couple of open bugs existing for utility mode connections (gpstart -m & gpstart -mR) behavior on GP-7x
-    # https://github.com/greenplum-db/gpdb/issues/12217 and https://github.com/greenplum-db/gpdb/issues/12566
+    # NOTE: On GP-7x, There are couple of open bugs existing for utility mode connections (gpstart -m & gpstart -mR)
+    # https://github.com/greenplum-db/gpdb/issues/12217 : "gpstart -m" accepts connections without checking "gp_role=utility"
+    # https://github.com/greenplum-db/gpdb/issues/12566 :  Non-superuser should not be able to connect via utility mode
+
     # Expected result of below test cases might change based on above issues fix
     @concourse_cluster
     @demo_cluster
@@ -108,6 +109,12 @@ Feature: gpstart behave tests
           And the user runs "gpstop -mai"
           And "gpstop -mai" should return a return code of 0
 
+    # Start the database with "gpstart -m -R" and test all psql login scenarios below
+    # | test scenarios                                 | psql cmd                                                           | return_code | DB login      | error message |
+    # | super user connections in Utility mode         | PGOPTIONS="-c gp_role=utility" psql -d postgres -c '/l'            | 0           | success       | None          |
+    # | non-super user connections in Utility mode     | PGOPTIONS="-c gp_role=utility" psql -d postgres -u foouser -c '/l' | 2           | failure       | psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections          |
+    # | super user connections                         | psql -d postgres -c '\l'                                           | 0           | success       | None          |
+    # | non-super user connections                     | psql -d postgres -u foouser -c '/l'                                | 2           | failure       | psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections         |
 
     @concourse_cluster
     @demo_cluster
@@ -133,6 +140,12 @@ Feature: gpstart behave tests
           And the user runs "gpstop -mai"
           And "gpstop -mai" should return a return code of 0
 
+    # Start the database with "gpstart -R" and test all psql login scenarios below
+    # | test scenarios                                 | psql cmd                                                           | return_code | DB login      | error message |
+    # | super user connections in Utility mode         | PGOPTIONS="-c gp_role=utility" psql -d postgres -c '/l'            | 0           | success       | None          |
+    # | non-super user connections in Utility mode     | PGOPTIONS="-c gp_role=utility" psql -d postgres -u foouser -c '/l' | 2           | failure       | psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections          |
+    # | super user connections                         | psql -d postgres -c '\l'                                           | 0           | success       | None          |
+    # | non-super user connections                     | psql -d postgres -u foouser -c '/l'                                | 2           | failure       | psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections         |
 
     @concourse_cluster
     @demo_cluster
