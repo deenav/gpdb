@@ -47,7 +47,7 @@ Feature: gpstart behave tests
 
 ############################
 
-    @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario: "gpstart -a" accepts all (non-super user and utility mode) connections
         Given the database is running
@@ -69,11 +69,24 @@ Feature: gpstart behave tests
          When The user runs psql "-U foouser -c '\l'" in "postgres"
          Then command should return a return code of 0
 
+#Examples:
+#        | test description                                          | return_code | should_confirm | print_statement        | should_update_master | should_update_segment | cmd                                                                               |
+#        | super user connections | 0           | should         | completed successfully | should               | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
+#        | non-super user connections   | 0           | should         | User Aborted. Exiting. | should not           | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
+#        | non-super user connections in Utility mode     | 0           | should not     | completed successfully | should               | should not            | gpconfig -c application_name -v "easy" --masteronly                               |
+#        | super user connections in Utility mode     | 0           | should not     | completed successfully | should               | should not            | gpconfig -c application_name -v "easy" --masteronly                               |
 
-    # There are couple of open bugs existing for utility mode connections behavior on GP-7x
+# Examples:
+#        | test description                               |  psql cmd  |return_code | should_confirm | print_statement        | should_update_coordinator | should_update_segment | cmd                                                                               |
+#        | super user connections in Utility mode         | 0           | should         | completed successfully | should                    | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
+#        | non-super user connections in Utility mode     | 0           | should         | User Aborted. Exiting. | should not                | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
+#        | super user connections                         | 0           | should         | completed successfully | should                    | should                | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/yes.txt|
+#        | non-super user connections                     | 0           | should         | User Aborted. Exiting. | should not                | should not            | gpconfig -c application_name -v "easy" < test/behave/mgmt_utils/steps/data/no.txt |
+
+    # NOTE: There are couple of open bugs existing for utility mode connections (gpstart -m & gpstart -mR) behavior on GP-7x
     # https://github.com/greenplum-db/gpdb/issues/12217 and https://github.com/greenplum-db/gpdb/issues/12566
     # Expected result of below test cases might change based on above issues fix
-    @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario: "gpstart -m -a" should allow only utility mode connections
         Given the database is not running
@@ -96,7 +109,7 @@ Feature: gpstart behave tests
           And "gpstop -mai" should return a return code of 0
 
 
-    @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario: "gpstart -m -R -a" should allow only super user in utility mode connections
         Given the database is not running
@@ -121,7 +134,7 @@ Feature: gpstart behave tests
           And "gpstop -mai" should return a return code of 0
 
 
-   @concourse_cluster
+    #@concourse_cluster
     @demo_cluster
     Scenario: "gpstart -R -a" should not allow non-super user connections
         Given the database is not running
