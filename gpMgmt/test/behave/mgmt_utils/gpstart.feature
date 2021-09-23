@@ -47,7 +47,7 @@ Feature: gpstart behave tests
 
 ############################
 
-    #@concourse_cluster
+    @concourse_cluster
     @demo_cluster
     Scenario: "gpstart -a" accepts all (non-super user and utility mode) connections
         Given the database is running
@@ -86,7 +86,7 @@ Feature: gpstart behave tests
     # NOTE: There are couple of open bugs existing for utility mode connections (gpstart -m & gpstart -mR) behavior on GP-7x
     # https://github.com/greenplum-db/gpdb/issues/12217 and https://github.com/greenplum-db/gpdb/issues/12566
     # Expected result of below test cases might change based on above issues fix
-    #@concourse_cluster
+    @concourse_cluster
     @demo_cluster
     Scenario: "gpstart -m -a" should allow only utility mode connections
         Given the database is not running
@@ -109,7 +109,7 @@ Feature: gpstart behave tests
           And "gpstop -mai" should return a return code of 0
 
 
-    #@concourse_cluster
+    @concourse_cluster
     @demo_cluster
     Scenario: "gpstart -m -R -a" should allow only super user in utility mode connections
         Given the database is not running
@@ -134,7 +134,7 @@ Feature: gpstart behave tests
           And "gpstop -mai" should return a return code of 0
 
 
-    #@concourse_cluster
+    @concourse_cluster
     @demo_cluster
     Scenario: "gpstart -R -a" should not allow non-super user connections
         Given the database is not running
