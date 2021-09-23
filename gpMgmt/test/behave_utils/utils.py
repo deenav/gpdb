@@ -160,8 +160,11 @@ def check_err_msg(context, err_msg):
     if not hasattr(context, 'exception'):
         raise Exception('An exception was not raised and it was expected')
     pat = re.compile(err_msg)
-    if not pat.search(context.error_message):
-        err_str = "Expected error string '%s' and found: '%s'" % (err_msg, context.error_message)
+    actual = context.stdout_message
+    if isinstance(msg, unicode):
+        actual = actual.decode('utf-8')
+    if not pat.search(actual):
+        err_str = "Expected error string '%s' and found: '%s'" % (err_msg, actual)
         raise Exception(err_str)
 
 

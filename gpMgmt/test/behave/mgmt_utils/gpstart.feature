@@ -52,7 +52,7 @@ Feature: gpstart behave tests
     Scenario: "gpstart -a" accepts all (non-super user and utility mode) connections
         Given the database is running
           And the user runs psql with "-c 'create user foouser login;'" against database "postgres"
-          And the user runs command "echo 'local all foouser trust' >> $MASTER_DATA_DIRECTORY/pg_hba.conf"
+          And the user runs command "echo 'local all foouser trust' >> $COORDINATOR_DATA_DIRECTORY/pg_hba.conf"
           And the database is not running
           And the user runs "gpstart -a"
           And "gpstart -a" should return a return code of 0
