@@ -121,14 +121,14 @@ Feature: gpstart behave tests
 
          When The user runs psql "-U foouser -c '\l'" in "postgres" in utility mode
          Then command should return a return code of 2
-          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+          And command should print "psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
 
          When The user runs psql "-c '\l'" in "postgres"
          Then command should return a return code of 0
 
          When The user runs psql "-U foouser -c '\l'" in "postgres"
          Then command should return a return code of 2
-          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+          And command should print "psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
 
           And the user runs "gpstop -mai"
           And "gpstop -mai" should return a return code of 0
@@ -146,14 +146,14 @@ Feature: gpstart behave tests
 
          When The user runs psql "-U foouser -c '-l'" in "postgres" in utility mode
          Then command should return a return code of 2
-          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+          And command should print "psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
 
          When The user runs psql "-c '\l'" in "postgres"
          Then command should return a return code of 0
 
          When The user runs psql "-U foouser -c '-l'" in "postgres"
          Then command should return a return code of 2
-          And command should print "psql: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
+          And command should print "psql: error: FATAL:  remaining connection slots are reserved for non-replication superuser connections" error message
 
           And The user runs psql with "-c 'drop user foouser;'" against database "postgres"
           And the user runs "gpstop -ai"

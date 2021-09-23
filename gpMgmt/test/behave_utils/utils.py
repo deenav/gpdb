@@ -160,7 +160,7 @@ def check_err_msg(context, err_msg):
     if not hasattr(context, 'exception'):
         raise Exception('An exception was not raised and it was expected')
     pat = re.compile(err_msg)
-    actual = context.stdout_message
+    actual = context.error_message
     if type(actual) is bytes:
         actual = actual.decode()
     if not pat.search(actual):
