@@ -161,7 +161,7 @@ def check_err_msg(context, err_msg):
         raise Exception('An exception was not raised and it was expected')
     pat = re.compile(err_msg)
     actual = context.stdout_message
-    if isinstance(msg, unicode):
+    if isinstance(err_msg, unicode):
         actual = actual.decode('utf-8')
     if not pat.search(actual):
         err_str = "Expected error string '%s' and found: '%s'" % (err_msg, actual)
