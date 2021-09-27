@@ -170,3 +170,4 @@ Feature: gpstart behave tests
           And The user runs psql with "-c 'drop user foouser;'" against database "postgres"
           And the user runs "gpstop -ai"
           And "gpstop -ai" should return a return code of 0
+
