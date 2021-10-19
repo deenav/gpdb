@@ -492,6 +492,13 @@ def impl(context, HOST, port, dir, ctxt):
 def impl(context, command, err_msg):
     check_err_msg(context, err_msg)
 
+@then('{command} {state} print "{err_msg}" error message')
+def impl(context, command, state, err_msg):
+    if state == "should not":
+        check_string_not_present_err_msg(context, err_msg)
+    elif state == "should":
+        check_err_msg(context, err_msg)
+
 @when('{command} should print "{out_msg}" escaped to stdout')
 @then('{command} should print "{out_msg}" escaped to stdout')
 @then('{command} should print a "{out_msg}" escaped warning')
@@ -1844,23 +1851,16 @@ def impl(context, query, dbname, host, port):
     cmd.run(validateAfter=True)
     context.stdout_message = cmd.get_stdout()
 
-@when('The user runs psql "{query}" in "{dbname}" in utility mode')
-@then('The user runs psql "{query}" in "{dbname}" in utility mode')
-def impl(context, query, dbname):
-    psql_cmd = "export PGOPTIONS=\'-c gp_role=utility\'; psql -d \'%s\' %s;" % (
-        dbname, query)
-    p = Popen(psql_cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
-    stdout, stderr = p.communicate()
+@when('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
+@then('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
+@given('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
+def impl(context, psql_cmd, dbname, utility_mode):
+    if utility_mode:
+        cmd = "export PGOPTIONS=\'-c gp_role=utility\'; psql -d \'{}\' {};".format(dbname, psql_cmd)
+    else:
+        cmd = "psql -d \'{}\' {};".format(dbname, psql_cmd)
 
-    context.ret_code = p.returncode
-    context.stdout_message = stdout
-    context.error_message = stderr
-
-@when('The user runs psql "{query}" in "{dbname}"')
-@then('The user runs psql "{query}" in "{dbname}"')
-def impl(context, query, dbname):
-    psql_cmd = "psql -d \'%s\' %s;" % (dbname, query)
-    p = Popen(psql_cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+    p = Popen(cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
     stdout, stderr = p.communicate()
 
     context.ret_code = p.returncode
