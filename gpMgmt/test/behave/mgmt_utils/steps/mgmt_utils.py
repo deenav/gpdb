@@ -1862,13 +1862,6 @@ def impl(context, psql_cmd, dbname, utility_mode):
 
     run_command(context, cmd)
 
-    # p = Popen(cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
-    # stdout, stderr = p.communicate()
-    #
-    # context.ret_code = p.returncode
-    # context.stdout_message = stdout
-    # context.error_message = stderr
-
 @then('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
 @when('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
 @given('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
