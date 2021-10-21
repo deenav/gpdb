@@ -46,7 +46,7 @@ Feature: gpstart behave tests
 
   @concourse_cluster
     @demo_cluster
-    Scenario: non-super user 'foouser' could connect to psql database
+    Scenario: non-super user 'foouser' can connect to psql database
         Given the database is running
           And the user runs psql with "-c 'create user foouser login;'" against database "postgres"
           And the user runs command "echo 'local all foouser trust' >> $COORDINATOR_DATA_DIRECTORY/pg_hba.conf"
@@ -57,23 +57,23 @@ Feature: gpstart behave tests
 
     @concourse_cluster
     @demo_cluster
-    Scenario Outline: "gpstart" accepts <test_scenarios> in utility mode set to <utility_mode>
+    Scenario Outline: "gpstart" accepts <test_scenarios> when utility mode is set to <utility_mode>
         Given the database is not running
           And the user runs "gpstart -a"
           And "gpstart -a" should return a return code of 0
 
-         When The user runs psql "<psql_cmd>" against database "postgres" in utility mode set to "<utility_mode>"
-         Then psql_cmd should return a return code of <return_code>
+         When The user runs psql "<psql_cmd>" against database "postgres" when utility mode is set to "<utility_mode>"
+         Then psql_cmd should return a return code of 0
 
           And the user runs "gpstop -ai"
           And "gpstop -ai" should return a return code of 0
 
      Examples:
-         | test_scenarios             | utility_mode            | psql_cmd             | return_code | DB login      | error message |
-         | super user connections     | True                    | -c '\l'              | 0           | success       | None          |
-         | non-super user connections | True                    | -U foouser -c '\l'   | 0           | success       | None          |
-         | super user connections     | False                   | -c '\l'              | 0           | success       | None          |
-         | non-super user connections | False                   | -U foouser -c '\l'   | 0           | success       | None          |
+         | test_scenarios             | utility_mode            | psql_cmd             |
+         | super user connections     | True                    | -c '\l'              |
+         | non-super user connections | True                    | -U foouser -c '\l'   |
+         | super user connections     | False                   | -c '\l'              |
+         | non-super user connections | False                   | -U foouser -c '\l'   |
 
 
     # NOTE: On GP-7x, There are couple of open bugs existing for utility mode connections (gpstart -m & gpstart -mR)
@@ -83,32 +83,32 @@ Feature: gpstart behave tests
     # Expected result of below test cases might change based on above issues fix
     @concourse_cluster
     @demo_cluster
-    Scenario Outline: "gpstart -m" <database> <test_scenarios> in utility mode set to <utility_mode>
+    Scenario Outline: "gpstart -m" accepts <test_scenarios> when utility mode is set to <utility_mode>
         Given the database is not running
           And the user runs "gpstart -ma"
           And "gpstart -ma" should return a return code of 0
 
-         When The user runs psql "<psql_cmd>" against database "postgres" in utility mode set to "<utility_mode>"
-         Then psql_cmd should return a return code of <return_code>
+         When The user runs psql "<psql_cmd>" against database "postgres" when utility mode is set to "<utility_mode>"
+         Then psql_cmd should return a return code of 0
 
           And the user runs "gpstop -mai"
           And "gpstop -mai" should return a return code of 0
 
      Examples:
-         | test_scenarios             | utility_mode            | psql_cmd             | return_code | database      | error message |
-         | super user connections     | True                    | -c '\l'              | 0           | accepts       | None          |
-         | non-super user connections | True                    | -U foouser -c '\l'   | 0           | accepts       | None          |
-         | super user connections     | False                   | -c '\l'              | 0           | accepts       | None          |
-         | non-super user connections | False                   | -U foouser -c '\l'   | 0           | accepts       | None          |
+         | test_scenarios             | utility_mode            | psql_cmd             |
+         | super user connections     | True                    | -c '\l'              |
+         | non-super user connections | True                    | -U foouser -c '\l'   |
+         | super user connections     | False                   | -c '\l'              |
+         | non-super user connections | False                   | -U foouser -c '\l'   |
 
     @concourse_cluster
     @demo_cluster
-    Scenario Outline: "gpstart -m -R" <database> <test_scenarios> in utility mode set to <utility_mode>
+    Scenario Outline: "gpstart -m -R" <database> <test_scenarios> when utility mode is set to <utility_mode>
         Given the database is not running
           And the user runs "gpstart -mRa"
           And "gpstart -mRa" should return a return code of 0
 
-         When The user runs psql "<psql_cmd>" against database "postgres" in utility mode set to "<utility_mode>"
+         When The user runs psql "<psql_cmd>" against database "postgres" when utility mode is set to "<utility_mode>"
          Then psql_cmd should return a return code of <return_code>
           And psql_cmd "<error_out_state>" print "<error_msg>" error message
 
@@ -124,12 +124,12 @@ Feature: gpstart behave tests
 
     @concourse_cluster
     @demo_cluster
-    Scenario Outline: "gpstart -R" <database> <test_scenarios> in utility mode set to <utility_mode>
+    Scenario Outline: "gpstart -R" <database> <test_scenarios> when utility mode is set to <utility_mode>
         Given the database is not running
           And the user runs "gpstart -Ra"
           And "gpstart -Ra" should return a return code of 0
 
-         When The user runs psql "<psql_cmd>" against database "postgres" in utility mode set to "<utility_mode>"
+         When The user runs psql "<psql_cmd>" against database "postgres" when utility mode is set to "<utility_mode>"
          Then psql_cmd should return a return code of <return_code>
           And psql_cmd "<error_out_state>" print "<error_msg>" error message
 
@@ -145,7 +145,7 @@ Feature: gpstart behave tests
 
     @concourse_cluster
     @demo_cluster
-    Scenario: Removal of non-super user 'foouser' role from psql database is success
+    Scenario: Removal of non-super user role succeeds
         Given the database is not running
           And the user runs "gpstart -a"
           And "gpstart -a" should return a return code of 0

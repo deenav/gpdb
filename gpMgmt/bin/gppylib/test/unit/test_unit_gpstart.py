@@ -197,12 +197,19 @@ class GpStart(GpTestCase):
         sys.argv = ["gpstart", "-m", "-R", "-a"]
         self.mock_userinput.ask_yesno.return_value = True
         self.subject.unix.PgPortIsActive.local.return_value = False
-
         self.mock_os_path_exists.side_effect = os_exists_check
+        self.mock_pgconf.readfile.return_value.int.return_value = 99  # mock the port value
 
         gpstart = self.setup_gpstart()
+        gpstart.coordinator_datadir = "/data/coordinator"
+
         return_code = gpstart.run()
 
+        from mock import call
+        expected_args = call('Coordinator in utility mode with restricted set to True', gpstart.coordinator_datadir, 99, None, wrapper=None, wrapper_args=None,
+                             specialMode=None, restrictedMode=True, timeout=600, utilityMode=True, max_connections=99)
+
+        self.assertEqual([expected_args], self.subject.gp.CoordinatorStart.call_args_list) # assert that the CoordinatorStart function was called with the right arguments
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 0)
         self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')
         self.subject.logger.info.assert_any_call('Coordinator Started...')
@@ -212,12 +219,20 @@ class GpStart(GpTestCase):
         sys.argv = ["gpstart", "-m", "-R"]
         self.mock_userinput.ask_yesno.return_value = True
         self.subject.unix.PgPortIsActive.local.return_value = False
-
         self.mock_os_path_exists.side_effect = os_exists_check
+        self.mock_pgconf.readfile.return_value.int.return_value = 99  # mock the port value
 
         gpstart = self.setup_gpstart()
+        gpstart.coordinator_datadir = "/data/coordinator"
+
         return_code = gpstart.run()
 
+        from mock import call
+        expected_args = call('Coordinator in utility mode with restricted set to True', gpstart.coordinator_datadir, 99,
+                             None, wrapper=None, wrapper_args=None,
+                             specialMode=None, restrictedMode=True, timeout=600, utilityMode=True, max_connections=99)
+
+        self.assertEqual([expected_args], self.subject.gp.CoordinatorStart.call_args_list) # assert that the CoordinatorStart function was called with the right arguments
         self.assertEqual(self.mock_userinput.ask_yesno.call_count, 1)
         self.mock_userinput.ask_yesno.assert_called_once_with(None, '\nContinue with coordinator-only startup', 'N')
         self.subject.logger.info.assert_any_call('Starting Coordinator instance in admin mode')

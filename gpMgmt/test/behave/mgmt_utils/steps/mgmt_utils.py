@@ -1851,21 +1851,23 @@ def impl(context, query, dbname, host, port):
     cmd.run(validateAfter=True)
     context.stdout_message = cmd.get_stdout()
 
-@when('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
-@then('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
-@given('The user runs psql "{psql_cmd}" against database "{dbname}" in utility mode set to {utility_mode}')
+@when('The user runs psql "{psql_cmd}" against database "{dbname}" when utility mode is set to {utility_mode}')
+@then('The user runs psql "{psql_cmd}" against database "{dbname}" when utility mode is set to {utility_mode}')
+@given('The user runs psql "{psql_cmd}" against database "{dbname}" when utility mode is set to {utility_mode}')
 def impl(context, psql_cmd, dbname, utility_mode):
     if utility_mode:
         cmd = "export PGOPTIONS=\'-c gp_role=utility\'; psql -d \'{}\' {};".format(dbname, psql_cmd)
     else:
         cmd = "psql -d \'{}\' {};".format(dbname, psql_cmd)
 
-    p = Popen(cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
-    stdout, stderr = p.communicate()
+    run_command(context, cmd)
 
-    context.ret_code = p.returncode
-    context.stdout_message = stdout
-    context.error_message = stderr
+    # p = Popen(cmd, stdout=PIPE, stdin=PIPE, stderr=PIPE, shell=True)
+    # stdout, stderr = p.communicate()
+    #
+    # context.ret_code = p.returncode
+    # context.stdout_message = stdout
+    # context.error_message = stderr
 
 @then('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
 @when('table {table_name} exists in "{dbname}" on specified segment {host}:{port}')
