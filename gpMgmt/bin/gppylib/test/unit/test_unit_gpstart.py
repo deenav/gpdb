@@ -2,7 +2,7 @@ import imp
 import os
 import sys
 
-from mock import Mock, patch
+from mock import Mock, patch, call
 
 from gppylib.gparray import Segment, GpArray
 from gppylib.operations.startSegments import StartSegmentsResult
@@ -205,7 +205,6 @@ class GpStart(GpTestCase):
 
         return_code = gpstart.run()
 
-        from mock import call
         expected_args = call('Coordinator in utility mode with restricted set to True', gpstart.coordinator_datadir, 99, None, wrapper=None, wrapper_args=None,
                              specialMode=None, restrictedMode=True, timeout=600, utilityMode=True, max_connections=99)
 
@@ -227,7 +226,6 @@ class GpStart(GpTestCase):
 
         return_code = gpstart.run()
 
-        from mock import call
         expected_args = call('Coordinator in utility mode with restricted set to True', gpstart.coordinator_datadir, 99,
                              None, wrapper=None, wrapper_args=None,
                              specialMode=None, restrictedMode=True, timeout=600, utilityMode=True, max_connections=99)
