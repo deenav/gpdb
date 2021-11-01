@@ -80,6 +80,7 @@ Feature: gpactivatestandby
 # The @concourse_cluster tag denotes the scenario that requires a remote cluster
 
     @concourse_cluster
+    @demo_cluster
     Scenario: tablespaces work on a multi-host environment
         Given the database is running
           And the standby is not initialized
