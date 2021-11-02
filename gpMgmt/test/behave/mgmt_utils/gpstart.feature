@@ -152,3 +152,4 @@ Feature: gpstart behave tests
 
           When the user runs psql with "-c 'drop user foouser;'" against database "postgres"
           Then psql should return a return code of 0
+
