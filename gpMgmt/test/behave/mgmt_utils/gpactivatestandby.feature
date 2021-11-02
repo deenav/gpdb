@@ -88,9 +88,9 @@ Feature: gpactivatestandby
          Then gpinitstandby should return a return code of 0
           And verify the standby coordinator entries in catalog
 
-#         When the coordinator goes down
-#         Then the user runs gpactivatestandby with options " "
-#          And gpactivatestandby should return a return code of 0
-#          And verify the standby coordinator is now acting as coordinator
-#          And the tablespace is valid on the standby coordinator
-#          And clean up and revert back to original coordinator
+         When the coordinator goes down
+         Then the user runs gpactivatestandby with options " "
+          And gpactivatestandby should return a return code of 0
+          And verify the standby coordinator is now acting as coordinator
+          And the tablespace is valid on the standby coordinator
+          And clean up and revert back to original coordinator
