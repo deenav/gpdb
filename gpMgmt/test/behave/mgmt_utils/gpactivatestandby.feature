@@ -81,7 +81,7 @@ Feature: gpactivatestandby
 
     @concourse_cluster
     Scenario: tablespaces work on a multi-host environment
-        Given the database is running
+        Given the database is not running
           And the standby is not initialized
           And a tablespace is created with data
          When the user runs gpinitstandby with options " "
