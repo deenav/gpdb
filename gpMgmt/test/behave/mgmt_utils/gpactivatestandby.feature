@@ -83,10 +83,10 @@ Feature: gpactivatestandby
     Scenario: tablespaces work on a multi-host environment
         Given the database is running
 
-          And the user runs command "gpconfig -c max_connections -v 400 -m 100"
-          And "gpconfig -c max_connections -v 400 -m 100" should return a return code of 0
-          And the user runs command "gpstop -ra"
-          And "gpstop -ra" should return a return code of 0
+#          And the user runs command "gpconfig -c max_connections -v 400 -m 100"
+#          And "gpconfig -c max_connections -v 400 -m 100" should return a return code of 0
+#          And the user runs command "gpstop -ra"
+#          And "gpstop -ra" should return a return code of 0
 
           And the standby is not initialized
           And a tablespace is created with data
