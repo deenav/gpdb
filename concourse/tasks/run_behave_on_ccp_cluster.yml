@@ -26,7 +26,9 @@ run:
     '"
 
     # Reduce max_connections value by half
-    if (( $REDUCE_MAX_CONNECTIONS)); then
+    echo " Reduce max connections: $REDUCE_MAX_CONNECTIONS "
+
+    if (( $REDUCE_MAX_CONNECTIONS )); then
       ssh -n mdw "
          source /usr/local/greenplum-db-devel/greenplum_path.sh
          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
