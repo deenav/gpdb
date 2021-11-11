@@ -15,7 +15,8 @@
                       {'name': 'replication_slots',
                        'use_concourse_cluster': false},
                       {'name': 'gpactivatestandby',
-                       'use_concourse_cluster': true},
+                       'use_concourse_cluster': true,
+                      'reduce_max_connections': true},
                       {'name': 'gpinitstandby',
                        'use_concourse_cluster': false},
                       {'name': 'gpcheckcat',
@@ -1793,6 +1794,9 @@ jobs:
             params:
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=~concourse_cluster,demo_cluster
               [[ test.env ]]
+              {% if test.reduce_max_connections %}
+              REDUCE_MAX_CONNECTIONS: "true"
+              {% endif %}
 {% endif %}
 {% if "rhel8" in os_types %}
 - name: [[ test.name ]]_rhel8
