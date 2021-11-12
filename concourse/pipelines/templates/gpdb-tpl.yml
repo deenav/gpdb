@@ -1775,6 +1775,9 @@ jobs:
               SUDO_MDW_USERNAME: ubuntu
               {% endif %}
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=concourse_cluster
+              { % if test.reduce_max_connections % }
+              REDUCE_MAX_CONNECTIONS: "true"
+              { % endif % }
               [[ test.env ]]
             on_success:
               <<: *ccp_destroy
@@ -1794,9 +1797,7 @@ jobs:
             params:
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=~concourse_cluster,demo_cluster
               [[ test.env ]]
-              {% if test.reduce_max_connections %}
-              REDUCE_MAX_CONNECTIONS: "true"
-              {% endif %}
+
 {% endif %}
 {% if "rhel8" in os_types %}
 - name: [[ test.name ]]_rhel8
