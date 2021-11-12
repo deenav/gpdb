@@ -25,21 +25,6 @@ run:
         source /home/gpadmin/gpdb_src/concourse/scripts/common.bash
     '"
 
-#    # Reduce max_connections value by half
-#    echo " Reduce max connections: ${REDUCE_MAX_CONNECTIONS} "
-#
-#    if [ "${REDUCE_MAX_CONNECTIONS}" == "true" ]; then
-#        ssh -n mdw "
-#            source /usr/local/greenplum-db-devel/greenplum_path.sh
-#            export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-#
-#            coordinator_max=$(($(gpconfig -s max_connections | grep Coordinator | awk '{ print $NF }') / 2))
-#            seg_max=$(($(gpconfig -s max_connections | grep Segment | awk '{ print $NF }') / 2))
-#
-#            gpconfig -c max_connections -v $seg_max -m $Coordinator_max
-#        "
-#    fi
-
     # ensure cluster is stopped
     ssh -n mdw "
         source /usr/local/greenplum-db-devel/greenplum_path.sh
