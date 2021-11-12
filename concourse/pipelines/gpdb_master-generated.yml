@@ -2514,7 +2514,6 @@ jobs:
             image: gpdb7-ubuntu18.04-test
             params:
               BEHAVE_FLAGS: --tags=gpactivatestandby --tags=concourse_cluster
-
             on_success:
               <<: *ccp_destroy
             ensure:

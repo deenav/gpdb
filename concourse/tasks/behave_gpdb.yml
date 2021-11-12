@@ -11,7 +11,6 @@ params:
   BEHAVE_FLAGS: ""
   BLDWRAP_POSTGRES_CONF_ADDONS: ""
   TEST_NAME: ""
-  #REDUCE_MAX_CONNECTIONS: ""
 caches:
   - path: pip-cache-dir
 run:

@@ -1797,7 +1797,6 @@ jobs:
             params:
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=~concourse_cluster,demo_cluster
               [[ test.env ]]
-
 {% endif %}
 {% if "rhel8" in os_types %}
 - name: [[ test.name ]]_rhel8
