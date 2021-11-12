@@ -1776,7 +1776,7 @@ jobs:
               {% endif %}
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=concourse_cluster
               {% if test.reduce_max_connections %}
-              REDUCE_MAX_CONNECTIONS: "true"
+              REDUCE_MAX_CONNECTIONS: true
               {% endif %}
               [[ test.env ]]
             on_success:
