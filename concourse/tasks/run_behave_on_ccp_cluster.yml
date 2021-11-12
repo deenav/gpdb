@@ -28,25 +28,23 @@ run:
     # Reduce max_connections value by half
     if (( $REDUCE_MAX_CONNECTIONS == "true" )); then
         coordinator=`ssh -n mdw "
-        source /usr/local/greenplum-db-devel/greenplum_path.sh
-        export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-        gpconfig -s max_connections | grep Coordinator | awk '{print $3}'
+          source /usr/local/greenplum-db-devel/greenplum_path.sh
+          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
+          gpconfig -s max_connections | grep Coordinator
         "`
         coordinator_max=$((`echo $coordinator |awk '{print $3}'`/2))
-        echo $coordinator_max
 
         segment=`ssh -n mdw "
-        source /usr/local/greenplum-db-devel/greenplum_path.sh
-        export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-        gpconfig -s max_connections | grep Segment | awk '{print $3}'
+          source /usr/local/greenplum-db-devel/greenplum_path.sh
+          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
+          gpconfig -s max_connections | grep Segment
         "`
         segment_max=$((`echo $segment |awk '{print $3}'`/2))
-        echo $segment_max
 
         ssh -n mdw "
-        source /usr/local/greenplum-db-devel/greenplum_path.sh
-        export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-        gpconfig -c max_connections -v $segment_max -m $coordinator_max
+          source /usr/local/greenplum-db-devel/greenplum_path.sh
+          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
+          gpconfig -c max_connections -v $segment_max -m $coordinator_max
         "
     fi
 
@@ -54,9 +52,7 @@ run:
     ssh -n mdw "
         source /usr/local/greenplum-db-devel/greenplum_path.sh
         export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-        if [ -d \$COORDINATOR_DATA_DIRECTORY ]; then
-            gpstop -a
-        fi
+        if [ -d \$COORDINATOR_DATA_DIRECTORY ]; then gpstop -a; fi
     "
 
     # setting sysctl settings
@@ -118,7 +114,6 @@ run:
         export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
         if [ -d \$COORDINATOR_DATA_DIRECTORY ]; then gpstart -a; fi
     "
-   
     while read -r host; do
         scp -qr "pip-cache-dir" $host:pip-cache-dir
     done < cluster_env_files/hostfile_all
