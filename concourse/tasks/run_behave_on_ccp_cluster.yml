@@ -27,19 +27,8 @@ run:
 
     # Reduce max_connections value by half
     if (( $REDUCE_MAX_CONNECTIONS == "true" )); then
-        coordinator=`ssh -n mdw "
-          source /usr/local/greenplum-db-devel/greenplum_path.sh
-          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-          gpconfig -s max_connections | grep Coordinator
-        "`
-        coordinator_max=$((`echo $coordinator |awk '{print $3}'`/2))
-
-        segment=`ssh -n mdw "
-          source /usr/local/greenplum-db-devel/greenplum_path.sh
-          export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-          gpconfig -s max_connections | grep Segment
-        "`
-        segment_max=$((`echo $segment |awk '{print $3}'`/2))
+        coordinator_max=100
+        segment_max=300
 
         ssh -n mdw "
           source /usr/local/greenplum-db-devel/greenplum_path.sh
