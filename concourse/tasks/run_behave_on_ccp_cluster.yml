@@ -25,7 +25,8 @@ run:
         source /home/gpadmin/gpdb_src/concourse/scripts/common.bash
     '"
 
-    # Reduce max_connections value by half
+    # Current max_connections values on concourse test VMs are, Coordinator=250 and Segment=750
+    # Below code reduces max_connections values on concourse test VMs to reduce memory footprint
     if (( $REDUCE_MAX_CONNECTIONS == "true" )); then
         coordinator_max=100
         segment_max=300
