@@ -25,16 +25,12 @@ run:
         source /home/gpadmin/gpdb_src/concourse/scripts/common.bash
     '"
 
-    # Current max_connections values on concourse test VMs are, Coordinator=250 and Segment=750
-    # Below code reduces max_connections values on concourse test VMs to reduce memory footprint
-    if (( $REDUCE_MAX_CONNECTIONS == "true" )); then
-        coordinator_max=100
-        segment_max=300
-
+    # Set max_connections values on concourse test VMs
+    if (( $COORDINATOR_MAX_CONNECT > 0 )); then
         ssh -n mdw "
           source /usr/local/greenplum-db-devel/greenplum_path.sh
           export COORDINATOR_DATA_DIRECTORY='/data/gpdata/master/gpseg-1'
-          gpconfig -c max_connections -v $segment_max -m $coordinator_max
+          gpconfig -c max_connections -v $SEGMENT_MAX_CONNECT -m $COORDINATOR_MAX_CONNECT
         "
     fi
 

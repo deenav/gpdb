@@ -16,7 +16,7 @@
                        'use_concourse_cluster': false},
                       {'name': 'gpactivatestandby',
                        'use_concourse_cluster': true,
-                       'reduce_max_connections': true},
+                       'set_max_connections': true},
                       {'name': 'gpinitstandby',
                        'use_concourse_cluster': false},
                       {'name': 'gpcheckcat',
@@ -1766,6 +1766,11 @@ jobs:
           {% endif %}
           - task: gpinitsystem
             file: ccp_src/ci/tasks/gpinitsystem.yml
+            params:
+              {% if test.set_max_connections %}
+              COORDINATOR_MAX_CONNECT: 100
+              SEGMENT_MAX_CONNECT: 300
+              {% endif %}
           - task: [[ test.name ]]_concourse_cluster_tests
             file: gpdb_src/concourse/tasks/run_behave_on_ccp_cluster.yml
             image: gpdb7-ubuntu18.04-test
@@ -1775,9 +1780,6 @@ jobs:
               SUDO_MDW_USERNAME: ubuntu
               {% endif %}
               BEHAVE_FLAGS: --tags=[[ test.name ]] --tags=concourse_cluster
-              {% if test.reduce_max_connections %}
-              REDUCE_MAX_CONNECTIONS: true
-              {% endif %}
               [[ test.env ]]
             on_success:
               <<: *ccp_destroy
